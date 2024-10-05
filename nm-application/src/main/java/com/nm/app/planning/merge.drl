@@ -1,0 +1,36 @@
+//created on: 8 févr. 2015
+dialect "java"
+import java.util.*;
+import com.nm.app.planning.*;
+
+//list any import classes here.
+
+
+
+//declare any global variables here
+
+rule "clear empty slots" 
+	salience 0
+	when
+		$list: Collection()
+		$slot: DtoNodeMerge()
+		eval($slot.isEmpty())
+	then 
+		$list.remove($slot);
+		delete($slot);
+end
+
+rule "optimize slots" 
+	salience -1
+	when
+		$merger: NodeMerger()
+		$list: Collection()
+		$ev1: DtoNodeMerge($t1 : type, $u1 : uuid)
+		$ev2: DtoNodeMerge(type.equals($t1), !uuid.equals($u1))
+		eval($ev1.overlapsOrAbuts($ev2))
+	then 
+		DtoNodeMerge ev3 = $merger.merge($ev1,$ev2,$list);
+		delete($ev1);
+		delete($ev2);
+		insert(ev3);
+end

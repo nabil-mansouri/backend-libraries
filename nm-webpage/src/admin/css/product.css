@@ -1,0 +1,64 @@
+@CHARSET "ISO-8859-1";
+
+.ng-ingredient .nb-image-thumb img {
+	height: 65px
+}
+
+.ng-ingredient .nb-image-options {
+	height: 24px;
+	overflow: hidden;
+}
+
+.nb-product-draft .panel-heading {
+	font-size: 16px;
+}
+
+.nb-product-draft a {
+	border: 0;
+}
+
+.nb-product-draft .fa-times {
+	position: absolute;
+	right: 15px;
+	top: 14px;
+}
+
+.nb-product-draft .fa-edit {
+	position: absolute;
+	right: 35px;
+	top: 15px;
+}
+
+@media screen and (min-width: 640px) {
+	.nb-product-table {
+		height: 600px;
+		overflow: hidden;
+		margin-bottom: 25px;
+	}
+	.nb-product-table>* {
+		height: 100%;
+	}
+	.nb-product-table-panel,.nb-product-table-panel .panel {
+		height: 100%;
+	}
+	.nb-product-table .nb-product-draft {
+		height: 48%;
+		position: relative;
+		overflow: hidden;
+		margin: 0;
+		margin-bottom: 5%;
+		padding-bottom: 41px;
+	}
+	.nb-product-table .nb-product-draft .panel-heading {
+		position: absolute;
+		top: 0;
+		width: 100%;
+		z-index: 55;
+	}
+	.nb-product-table .nb-product-draft .panel-body {
+		height: 100%;
+		margin-top: 41px;
+		overflow: scroll;
+		overflow-x: hidden;
+	}
+}

@@ -1,0 +1,132 @@
+//created on: 8 févr. 2015
+dialect "java"
+import java.util.*;
+import com.nm.products.constants.*;
+import com.nm.products.navigation.*;
+import com.nm.products.dtos.navigation.*;
+
+//list any import classes here.
+
+
+
+//declare any global variables here
+rule "if root is not visiteable go down and set unvisited"
+	salience 2
+	when
+		$helper: ProductNavigationHelper()
+		$item: NavigationHeadItem(root==true,state==NavigationHeadState.Current)
+		$body: NavigationBody(state==NavigationBodyState.Begin)
+		eval($helper.hasNotIngredients($body) && $helper.hasParts($body))
+		$node: NavigationNode(body := $body)
+	then 
+		Collection<NavigationHeadItem> items = $helper.down($node);
+		for(NavigationHeadItem i : items){
+			insert(i);
+		}
+		$helper.unvisited($item);
+		$helper.clear($body);
+		update($item);
+		update($body);
+end
+
+rule "if root is not visiteable and can not go down then commit"
+	salience 2
+	when
+		$helper: ProductNavigationHelper()
+		$item: NavigationHeadItem(root==true,state==NavigationHeadState.Current)
+		$body: NavigationBody(state==NavigationBodyState.Begin)
+		eval($helper.hasNotIngredients($body) && $helper.hasNotParts($body))
+		$node: NavigationNode(body := $body)
+	then 
+		$helper.commit($body);
+		update($body);
+end
+
+rule "if current is commit can go down go down"
+	salience 1
+	when
+		$helper: ProductNavigationHelper()
+		$item: NavigationHeadItem(state==NavigationHeadState.Current)
+		$body: NavigationBody(state==NavigationBodyState.Commit)
+		eval($helper.hasParts($body))
+		$node: NavigationNode(body := $body)
+	then 
+		Collection<NavigationHeadItem> items = $helper.down($node);
+		for(NavigationHeadItem i : items){
+			insert(i);
+		}
+		$helper.visited($item);
+		$helper.clear($body);
+		update($item);
+		update($body);
+end
+
+rule "if current is commit and cannot go down go next"
+	salience 1
+	when
+		$helper: ProductNavigationHelper()
+		$item: NavigationHeadItem(state==NavigationHeadState.Current)
+		$body: NavigationBody(state==NavigationBodyState.Commit)
+		$node: NavigationNode(body := $body)
+		eval($helper.hasNotParts($body) && $helper.hasNext($node))
+	then 
+		NavigationHeadItem i = $helper.next($node);
+		$helper.visited($item);
+		$helper.clear($body);
+		update(i);
+		update($item);
+		update($body);
+end
+
+rule "if current is commit and cannot go down and cannot go next then go up"
+	salience 1
+	when
+		$helper: ProductNavigationHelper()
+		$item: NavigationHeadItem(state==NavigationHeadState.Current)
+		$body: NavigationBody(state==NavigationBodyState.Commit)
+		$node: NavigationNode(body := $body)
+		eval($helper.hasNotParts($body) && $helper.hasNotNext($node))
+	then 
+		NavigationHeadItem i = $helper.up($node);
+		update($node);
+		if(i!=null){
+			update(i);
+		}
+		$helper.visited($item);
+		$helper.clear($body);
+		update($item);
+		update($body);
+		update($node);
+end
+
+rule "if navigation is finished then commit"
+	salience 1
+	when
+		$helper: ProductNavigationHelper()
+		$node: NavigationNode(state==NavigationState.Begin || state==null)
+		eval($helper.isFinished($node))
+	then 
+		$helper.commit($node);
+		update($node);
+end
+
+rule "if current body products is empty load it"
+	salience 0
+	when
+		$helper: ProductNavigationHelper()
+		$body: NavigationBody(state==NavigationBodyState.Begin,products.isEmpty())
+		$item: NavigationHeadItem(state==NavigationHeadState.Current)
+		eval($helper.hasProducts($item))
+	then 
+		$helper.loadProducts($item,$body);
+end
+
+rule "if current body ingredients is empty load it"
+	salience -1
+	when
+		$helper: ProductNavigationHelper()
+		$body: NavigationBody(state==NavigationBodyState.Begin,ingredients.isEmpty(),product!=null)
+		eval($helper.hasIngredients($body))
+	then 
+		$helper.loadIngredients($body);
+end

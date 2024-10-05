@@ -1,0 +1,16 @@
+CURRENCIES FROM:
+- https://gist.githubusercontent.com/Fluidbyte/2973986/raw/9ead0f85b6ee6071d018564fa5a314a0297212cc/Common-Currency.json
+
+OTHERS:
+http://www.localeplanet.com/api/auto/currencymap.json
+http://openexchangerates.org/currencies.json
+
+COUNTRIES FROM:
+https://github.com/umpirsky/country-list
+
+OTHERS:
+http://dev.umpirsky.com/list-of-all-countries-in-all-languages-and-all-data-formats/
+https://gist.githubusercontent.com/Keeguon/2310008/raw/865a58f59b9db2157413e7d3d949914dbf5a237d/countries.json
+
+LOCALES
+https://raw.githubusercontent.com/joker-x/languages.js/master/languages.json

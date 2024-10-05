@@ -1,0 +1,12 @@
+RewriteEngine On
+RewriteBase /
+
+RewriteRule ^admin/datas/currencies.json$ datas/currencies.json [QSA,NC,L]
+RewriteRule ^admin/datas/locales.json$ datas/locales.json [QSA,NC,L]
+RewriteRule ^admin/datas/countries/([a-z0-9_-]+)/country.json$ datas/countries/$1/country.json [QSA,NC,L]
+
+Options -Indexes
+Options -MultiViews
+
+RewriteRule ^$    /admin/page/index.php [R]
+RewriteRule ^ws/(.*)   http://localhost:8081/rm-ws/ws/$1 [P]

@@ -1,0 +1,28 @@
+package com.nm.prices.soa.computers.impl;
+
+import java.util.Collection;
+
+import com.nm.prices.dtos.forms.PriceComputerResult;
+import com.nm.prices.soa.computers.PriceChooserStrategy;
+
+/**
+ * 
+ * @author nabilmansouri
+ *
+ */
+public class PriceChooserStrategyMinimum implements PriceChooserStrategy {
+
+	public PriceComputerResult choose(Collection<PriceComputerResult> results) {
+		PriceComputerResult chosen = null;
+		for (PriceComputerResult c : results) {
+			if (chosen == null) {
+				chosen = c;
+			}
+			if (c.total() < chosen.total()) {
+				chosen = c;
+			}
+		}
+		return chosen;
+	}
+
+}

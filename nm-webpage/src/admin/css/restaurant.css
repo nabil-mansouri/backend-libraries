@@ -1,0 +1,141 @@
+@CHARSET "ISO-8859-1";
+/*Planning*/
+#hebdocalendar .fc-state-default,#hebdocalendar .fc-state-default .fc-button-inner{
+	background-color: #E3E4E8 !important;
+}
+
+#hebdocalendar .fc-state-active, 
+#hebdocalendar .fc-state-active .fc-button-inner, 
+#hebdocalendar .fc-state-active, 
+#hebdocalendar .fc-button-today .fc-button-inner, 
+#hebdocalendar .fc-state-hover, 
+#hebdocalendar .fc-state-hover .fc-button-inner 
+{
+	background: #65CEA7 !important;
+}
+
+#hebdocalendar .fc-content .fc-event.closed,
+#hebdocalendar .fc-event.closed .fc-event-inner,
+#hebdocalendar .fc-event.closed .fc-event-time {
+	background-color: #eee !important;
+	border-color: #eee !important;
+	color: #7a7676 !important;
+}
+
+#hebdocalendar .fc-agenda-days th {
+	text-align: center;
+	height: 25px;
+	font-size: 12px;
+	text-align: center;
+	background: #65CEA7 !important;
+	color: #fff;
+	text-transform: uppercase;
+}
+#hebdocalendar .fc-widget-header{
+	border-color: #62c6a0;
+}
+
+#hebdocalendar .fc-agenda .fc-agenda-axis {
+	width: 30px;
+	padding: 0 4px;
+	vertical-align: middle;
+	white-space: nowrap;
+	font-weight: normal;
+	text-align: center;
+	height: 10px;
+	line-height: 10px;
+	font-size: 10px;
+	text-align: center;
+	background: #65CEA7 !important;
+	color: #fff;
+	text-transform: uppercase;
+	border-color: #62c6a0;
+}
+
+#hebdocalendar{
+	margin-top: 60px;
+}
+
+#hebdocalendar .fc-button{
+font-size: 15px;
+padding: 5px 10px;
+}
+#hebdocalendar  .fc-agenda .fc-day-content{
+	/*display: none;*/
+}
+#hebdocalendar .fc-agenda-slots tr.fc-minor th, .fc-agenda-slots tr.fc-minor td,
+#hebdocalendar .fc-agenda-slots td div{
+	height: 10px;
+}
+#hebdocalendar .fc-event-vert .fc-event-time{
+	white-space: normal;
+}
+#hebdocalendar .fc-content .fc-event{
+	border-width: 0px;
+	border-radius:2px;
+}
+/*Other*/
+#appPlanning > div{
+	padding-left: 0px !important;
+	padding-right: 0px !important;
+}
+.nb-planningtitle{
+	font-weight: 600; padding-right: 1em;
+}
+.nopaddingr{
+	padding-right: 0px !important;
+}
+.nopaddingl{
+	padding-left: 0px !important;
+}
+.nopaddingt{
+	padding-top: 0px !important;
+}
+.nopaddingb{
+	padding-bottom: 0px !important;
+}
+.nomarginb{
+	margin-bottom: 0px !important;
+}
+.nopaddingh{
+	padding-left: 0px !important;
+	padding-right: 0px !important;
+}
+.nb-dateleft{
+	padding-right: 0px !important;
+}
+.nb-dateright{
+	padding-left: 0px !important;
+}
+.nb-dateleft .control-label,
+.nb-dateright .control-label{
+	padding-right: 0px;
+	white-space: nowrap;
+}
+.nb-dateleft > div,
+.nb-dateright > div{
+	padding-right: 0px !important;
+}
+.nb-dateleft > input,
+.nb-dateright > input{
+	font-size: 0.85em;
+	padding: 5px 7px;
+}
+
+.nb-formsubmit{
+	margin-bottom: 0px;
+}
+.nb-formsubmit button {
+	float: right;
+}
+.nb-panel-heading{
+	font-size: 18px !important;
+	padding-bottom: 5px;
+}
+.nb-panel-body{
+	padding-top: 0px !important;
+}
+
+.nb-panel-body .control-label{
+	text-align: left;
+}

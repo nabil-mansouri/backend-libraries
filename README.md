@@ -1,0 +1,27 @@
+Generic backend libraries written in java:
+- nm-auth: openid, oauth, login/password, authorization apis
+- nm-buiseness: price and orders workflow apis
+- nm-cart: e-commerce cart apis
+- nm-cms: cms apis
+- nm-communication: notification service apis
+- nm-config: config management apis
+- nm-datas: database apis
+- nm-dictionnary: key value storage apis
+- nm-discount: e-commerce discount management apis
+- nm-documents: open office transformer apis
+- nm-geo: geolocation apis
+- nm-model: e-commerce misc model and daos
+- nm-order: e-commerce order model and daos
+- nm-payments: payment apis
+- nm-permissions: generic permissions/authorization apis
+- nm-planning: generic planning management apis
+- nm-price: e-commerce price apis
+- nm-products: e-commerce products apis
+- nm-shop: e-commerce shop apis
+- nm-social: social binding apis
+- nm-stats: stats computer apis
+- nm-template: template engine apis
+- nm-user: user managementapis
+- nm-utils: util classes
+- nm-webpage: example of client calling apis
+- nm-wm: import and init others modules and exposes REST API

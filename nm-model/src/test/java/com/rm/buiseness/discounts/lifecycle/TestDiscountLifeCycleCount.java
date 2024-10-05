@@ -1,0 +1,139 @@
+package com.rm.buiseness.discounts.lifecycle;
+
+import java.util.Collection;
+import java.util.Date;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.rm.buiseness.commons.TestUrlUtils;
+import com.rm.contract.clients.beans.ClientForm;
+import com.rm.contract.clients.builders.AddressComponentFormBuilder;
+import com.rm.contract.clients.builders.AddressFormBuilder;
+import com.rm.contract.clients.builders.ClientFormBuilder;
+import com.rm.contract.discounts.beans.DiscountFormBean;
+import com.rm.contract.discounts.beans.DiscountLifeCycleRuleBean;
+import com.rm.contract.discounts.beans.DiscountRuleBean;
+import com.rm.contract.discounts.beans.DiscountRuleSubjectBean;
+import com.rm.contract.discounts.constants.DiscountLifeCycleRuleType;
+import com.rm.contract.discounts.constants.DiscountOperationType;
+import com.rm.dao.discounts.DaoDiscount;
+import com.rm.dao.discounts.DaoDiscountTracking;
+import com.rm.soa.clients.SoaClient;
+import com.rm.soa.discounts.SoaDiscount;
+import com.rm.soa.discounts.lifecycle.DiscountLifeCycleContext;
+import com.rm.soa.discounts.lifecycle.DiscountLifeCycleProcessor;
+import com.rm.utils.dao.NoDataFoundException;
+
+/**
+ * 
+ * @author Nabil
+ * 
+ */
+@RunWith(SpringJUnit4ClassRunner.class) @ActiveProfiles(TestUrlUtils.PROFILE_TEST)
+@ContextConfiguration(locations = { TestUrlUtils.CONTEXT_PATH })
+public class TestDiscountLifeCycleCount {
+
+	@Autowired
+	private SoaDiscount soaDiscount;
+	@Autowired
+	private SoaClient soaClient;
+	@Autowired
+	private DiscountLifeCycleProcessor lifeCycleProcessor;
+	@Autowired
+	private DaoDiscount doDaoDiscount;
+	@Autowired
+	private DaoDiscountTracking daoDiscountPlanning;
+
+	//
+	private DiscountFormBean discountBuilder;
+	private ClientForm client1, client2;
+	//
+	protected Log log = LogFactory.getLog(getClass());
+
+	@Before
+	public void globalSetUp() throws NoDataFoundException {
+		discountBuilder = new DiscountFormBean().setName("PROMO1").addRule(
+				new DiscountRuleBean().setOperation(true).setOperationType(DiscountOperationType.Fixe).setOperationValue(10d)
+						.setSubject(new DiscountRuleSubjectBean().setAllProducts(true)));
+		client1 = ClientFormBuilder
+				.get()
+				.withBirthDate(new Date())
+				.withEmail("n@a.com")
+				.withFirstname("f")
+				.withIgnore(false)
+				.withName("n")
+				.withPhone("p")
+				.withAddress(
+						AddressFormBuilder
+								.get()
+								.withGeocode("GEOCODE")
+								.withComponents(
+										AddressComponentFormBuilder.get().withCountry("FR").withLatitude(2d).withLocality("LOC").withLongitude(2d)
+												.withPostal("POSTAL").withStreet("STREET").build())).build();
+		client1 = soaClient.save(client1);
+		client2 = ClientFormBuilder
+				.get()
+				.withBirthDate(new Date())
+				.withEmail("n@a.com")
+				.withFirstname("f")
+				.withIgnore(false)
+				.withName("n")
+				.withPhone("p")
+				.withAddress(
+						AddressFormBuilder
+								.get()
+								.withGeocode("GEOCODE")
+								.withComponents(
+										AddressComponentFormBuilder.get().withCountry("FR").withLatitude(2d).withLocality("LOC").withLongitude(2d)
+												.withPostal("POSTAL").withStreet("STREET").build())).build();
+		client2 = soaClient.save(client2);
+	}
+
+	@Test
+	@Transactional
+	public void testCountMax() throws NoDataFoundException {
+		//
+		DiscountFormBean promo1 = discountBuilder.addLifeRules(DiscountLifeCycleRuleType.AbsoluteCount,
+				new DiscountLifeCycleRuleBean().setEnable(true).setCountLimited(true).setCountMax(3));
+		promo1 = soaDiscount.save(promo1, "fr");
+		doDaoDiscount.flush();
+		System.out.println("----------------------------");
+		System.out.println(doDaoDiscount.findAll().size());
+		// today should not be available and not unavailable
+		DiscountLifeCycleContext context = new DiscountLifeCycleContext();
+		Collection<Long> founded = lifeCycleProcessor.findAvailable(context);
+		Assert.assertEquals(1, founded.size());
+		founded = lifeCycleProcessor.findUnAvailable(context);
+		Assert.assertEquals(0, founded.size());
+		// Use once => available
+		soaDiscount.use(client1.getId(), promo1.getId());
+		daoDiscountPlanning.flush();
+		founded = lifeCycleProcessor.findAvailable(context);
+		Assert.assertEquals(1, founded.size());
+		founded = lifeCycleProcessor.findUnAvailable(context);
+		Assert.assertEquals(0, founded.size());
+		// Use twice => available
+		soaDiscount.use(client2.getId(), promo1.getId());
+		daoDiscountPlanning.flush();
+		founded = lifeCycleProcessor.findAvailable(context);
+		Assert.assertEquals(1, founded.size());
+		founded = lifeCycleProcessor.findUnAvailable(context);
+		Assert.assertEquals(0, founded.size());
+		// used three times = >not available
+		soaDiscount.use(client1.getId(), promo1.getId());
+		daoDiscountPlanning.flush();
+		founded = lifeCycleProcessor.findAvailable(context);
+		Assert.assertEquals(0, founded.size());
+		founded = lifeCycleProcessor.findUnAvailable(context);
+		Assert.assertEquals(1, founded.size());
+	}
+}

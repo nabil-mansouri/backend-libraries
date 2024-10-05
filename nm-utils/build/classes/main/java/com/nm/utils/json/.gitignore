@@ -1,0 +1,15 @@
+/EnumHibernateType.class
+/EnumJsonConverterIn.class
+/EnumJsonConverterInKey.class
+/EnumJsonConverterOut.class
+/EnumJsonConverterOutKey.class
+/EnumJsonConverterRegistry.class
+/EnumJsonRegistryAnnotation.class
+/JsonIterator$JsonIteratorListener.class
+/JsonIterator.class
+/JsonIteratorListenerMerge.class
+/JsonStack.class
+/JsonUtils$MergeListener.class
+/JsonUtils.class
+/RawJsonConverterIn.class
+/RawJsonConverterOut.class

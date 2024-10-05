@@ -1,0 +1,55 @@
+//created on: 8 févr. 2015
+dialect "java"
+import java.util.*;
+import com.nm.plannings.dtos.*;
+import com.nm.plannings.rules.*;
+
+//list any import classes here.
+
+
+
+//declare any global variables here
+
+rule "clear empty slots" 
+	salience 0
+	when
+		$group: DtoSlotOccurrenceGroup()
+		$ev: DtoSlotOccurrence()
+		eval($ev.isEmpty())
+	then 
+		$group.remove($ev);
+		delete($ev);
+end
+
+rule "optimize slots" 
+	salience -1
+	when
+		$merg: SlotMerger()
+		$group: DtoSlotOccurrenceGroup()
+		$ev1: DtoSlotOccurrence($t1 : type, $u1 : uuid)
+		$ev2: DtoSlotOccurrence(type.equals($t1), !uuid.equals($u1))
+		eval($ev1.overlapsOrAbuts($ev2))
+	then 
+		DtoSlotOccurrence ev3 = $merg.merge($ev1,$ev2,$group);
+		delete($ev1);
+		delete($ev2);
+		insert(ev3);
+end
+
+rule "substract slots"
+	salience -2
+	when
+		$sub: SlotSubstractor()
+		$group: DtoSlotOccurrenceGroup()
+		$ev1: DtoSlotOccurrence($t1 : type)
+		$ev2: DtoSlotOccurrence(!type.equals($t1))
+		eval($ev1.overlaps($ev2))
+	then 
+		Collection<DtoSlotOccurrence> ev3 = $sub.substract($ev1,$ev2,$group);
+		delete($ev1);
+		delete($ev2);
+		for (DtoSlotOccurrence a : ev3){
+		    insert(a);
+		}
+end
+

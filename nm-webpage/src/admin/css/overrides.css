@@ -1,0 +1,21 @@
+.nav-pills>li>a, .thumbnail {
+	border-radius: 0;
+}
+
+.panel {
+	margin-bottom: 0px;
+	border-radius: 0;
+}
+
+.panel-heading {
+	overflow: hidden;
+}
+
+.thumbnail .caption {
+	overflow: hidden;
+	padding: 0px;
+}
+
+.fa-2x {
+	font-size: 1.2em;
+}

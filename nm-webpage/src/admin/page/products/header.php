@@ -1,0 +1,1 @@
+<link href="<?php echo url('css/product.css')?>" rel="stylesheet"></link>
